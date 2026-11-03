@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>팰월드 XX일기 아카이브</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* Layout: a graph-paper diary — index tabs on top, each episode a dated page, characters as pasted-in cards */
+:root{
+  --paper:#F2F1F7; --sheet:#FFFFFF; --ink:#1D1A33; --muted:#625D7E; --line:#DAD6E8; --grid:rgba(98,93,126,.07);
+  --pink:#D3346F; --pink-soft:#FBE3EC; --teal:#17807B; --chip:#E9E6F3; --shadow:0 1px 0 rgba(29,26,51,.06),0 6px 18px -10px rgba(29,26,51,.25);
+  --f-display:"Gaegu","Nanum Pen Script",cursive; --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#15132A; --sheet:#1F1C38; --ink:#ECE9F7; --muted:#A39EC2; --line:#332F57; --grid:rgba(163,158,194,.06);
+  --pink:#FF6E9E; --pink-soft:#3A2240; --teal:#4CC3BA; --chip:#2A2649; --shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px -12px rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#15132A; --sheet:#1F1C38; --ink:#ECE9F7; --muted:#A39EC2; --line:#332F57; --grid:rgba(163,158,194,.06);
+  --pink:#FF6E9E; --pink-soft:#3A2240; --teal:#4CC3BA; --chip:#2A2649; --shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px -12px rgba(0,0,0,.6); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--pink)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--pink);outline-offset:2px;border-radius:4px}
+
+/* header */
+header{padding-block:40px 8px}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(42px,7vw,72px);line-height:1;margin:6px 0 10px;text-wrap:balance;word-break:keep-all}
+h1 .heart{color:var(--pink)}
+.lede{max-width:62ch;color:var(--muted);margin:0}
+.stats{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.stats b{color:var(--ink);font-weight:500}
+
+/* tabs */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line);margin-top:18px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs a{flex:none;text-decoration:none;color:var(--muted);font-weight:500;padding:12px 14px 10px;border-bottom:3px solid transparent;font-size:15px}
+.tabs a[aria-current="page"]{color:var(--ink);border-color:var(--pink)}
+main{padding-block:28px 80px}
+.view[hidden]{display:none}
+h2{font-family:var(--f-display);font-weight:700;font-size:34px;line-height:1.1;margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 22px;max-width:65ch}
+
+/* episode spine */
+.spine{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:6px;margin-bottom:34px}
+.stamp{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--ink);background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:10px 4px 8px;min-width:0}
+.stamp .no{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.stamp .t{font-family:var(--f-display);font-weight:700;font-size:19px;line-height:1.1;text-align:center;word-break:keep-all}
+.stamp.wip{border-style:dashed;border-color:var(--pink)}
+.stamp:hover{border-color:var(--pink)}
+@media (max-width:720px){.spine{grid-template-columns:repeat(5,minmax(0,1fr))}}
+
+/* episode page */
+.ep{display:grid;grid-template-columns:96px minmax(0,1fr);gap:0 22px;padding:26px 0;border-top:1px dashed var(--line);scroll-margin-top:70px}
+.ep .num{font-family:var(--f-mono);font-size:40px;line-height:1;color:var(--line);font-weight:500}
+.ep h3{font-family:var(--f-display);font-weight:700;font-size:32px;line-height:1.1;margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.ep h3 .heart{color:var(--pink)}
+.ep h3 small{font-family:var(--f-body);font-size:14px;font-weight:500;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 10px}
+.pill{font-size:12px;font-weight:500;padding:2px 9px;border-radius:999px;background:var(--chip);color:var(--muted);white-space:nowrap}
+.pill.live{background:var(--pink-soft);color:var(--pink)}
+.pill.wip{background:transparent;border:1px dashed var(--pink);color:var(--pink)}
+.ep p{margin:0 0 12px;max-width:68ch}
+.ep .note{font-size:13px;color:var(--muted)}
+.faces{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.face{width:40px;height:40px;border-radius:50%;overflow:hidden;background:var(--chip);border:2px solid var(--sheet);box-shadow:0 0 0 1px var(--line);padding:0;cursor:pointer;display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.face img{width:100%;height:100%;object-fit:cover;object-position:20% 15%}
+details.scenes{background:var(--sheet);border:1px solid var(--line);border-radius:12px;max-width:760px}
+details.scenes summary{cursor:pointer;padding:10px 14px;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:8px}
+details.scenes summary::after{content:"펼치기";font-size:12px;color:var(--muted)}
+details.scenes[open] summary::after{content:"접기"}
+details.scenes summary::-webkit-details-marker{display:none}
+.scene{display:grid;grid-template-columns:48px 120px minmax(0,1fr);gap:4px 12px;padding:8px 14px;border-top:1px solid var(--line);font-size:14px}
+.scene .sn{font-family:var(--f-mono);font-size:12px;color:var(--pink);padding-top:2px}
+.scene .st{font-weight:600}
+.scene .sd{color:var(--muted)}
+.next{margin-top:12px;font-size:14px;color:var(--muted);border-left:3px solid var(--teal);padding-left:12px;max-width:68ch}
+@media (max-width:600px){.ep{grid-template-columns:1fr}.ep .num{font-size:28px;margin-bottom:4px}.scene{grid-template-columns:40px minmax(0,1fr)}.scene .sd{grid-column:2}}
+
+/* cast */
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:18px}
+.chip{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:5px 12px;cursor:pointer;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.filters select,.filters input{font:inherit;font-size:14px;color:var(--ink);background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.filters input{flex:1 1 160px;min-width:0}
+.count{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:0;text-align:left;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card:hover{border-color:var(--pink)}
+.card .pic{aspect-ratio:4/3;background:#FAFAFD;display:grid;place-items:center;position:relative;max-width:100%}
+.card .pic img{width:100%;height:100%;object-fit:contain}
+.card .pic .none{font-family:var(--f-display);font-size:22px;color:#9A96B4}
+.card .h{position:absolute;right:8px;bottom:8px;font-family:var(--f-mono);font-size:11px;background:rgba(29,26,51,.78);color:#fff;padding:1px 7px;border-radius:6px}
+.card .body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px}
+.card .nm{font-weight:600;font-size:16px}
+.card .en{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.eps{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+.eps span{font-family:var(--f-mono);font-size:11px;min-width:20px;text-align:center;border-radius:5px;background:var(--chip);color:var(--muted);padding:0 4px}
+.empty{color:var(--muted);padding:30px 0}
+
+/* dialog */
+dialog{border:none;border-radius:16px;padding:0;max-width:min(880px,calc(100vw - 24px));width:100%;background:var(--sheet);color:var(--ink);box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+dialog::backdrop{background:rgba(21,19,42,.55)}
+.dlg{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+.dlg .big{background:#FAFAFD;display:grid;place-items:center;min-height:260px}
+.dlg .big img{width:100%;height:100%;max-height:70vh;object-fit:contain}
+.alts{display:flex;gap:6px;flex-wrap:wrap;padding:10px;background:var(--chip)}
+.alts button{border:2px solid transparent;border-radius:8px;padding:0;background:#FAFAFD;width:64px;height:48px;overflow:hidden;cursor:pointer}
+.alts button[aria-pressed="true"]{border-color:var(--pink)}
+.alts img{width:100%;height:100%;object-fit:contain}
+.altcap{font-size:12px;color:var(--muted);padding:0 10px 10px;background:var(--chip)}
+.info{padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.info h4{font-family:var(--f-display);font-size:34px;line-height:1;margin:0}
+.info .en{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.info p{margin:0}
+.lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.must{background:var(--pink-soft);border-radius:10px;padding:10px 12px}
+.must ul{margin:0;padding-left:18px}
+.must li{font-size:14px}
+.ruler{display:flex;align-items:flex-end;gap:14px;height:150px;padding:24px 4px 0;border-bottom:1px solid var(--line)}
+.bar{width:64px;border-radius:6px 6px 0 0;background:var(--chip);position:relative}
+.bar.me{background:var(--pink)}
+.bar i{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-style:normal;font-family:var(--f-mono);font-size:11px;white-space:nowrap;color:var(--muted)}
+.rlab{display:flex;gap:14px;padding:4px 4px 0;font-size:12px;color:var(--muted)}
+.rlab span{width:64px;word-break:keep-all;text-align:center}
+.close{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--sheet);cursor:pointer;font-size:18px;line-height:1}
+@media (max-width:700px){.dlg{grid-template-columns:1fr}.dlg .big{min-height:200px}}
+
+/* world */
+.spheres{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:40px}
+.sph{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:16px 12px;text-align:center;min-width:0}
+.orb{width:64px;height:64px;border-radius:50%;margin:0 auto 10px;background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.9) 0 9%,transparent 10%),radial-gradient(circle at 50% 55%,var(--c),color-mix(in srgb,var(--c) 55%,#000));box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}
+.sph.ghost{border-style:dashed}
+.sph.ghost .orb{opacity:.45}
+.sph b{display:block;font-size:16px}
+.sph span{font-size:13px;color:var(--muted)}
+@media (max-width:640px){.spheres{grid-template-columns:repeat(2,minmax(0,1fr))}}
+h3.sec{font-family:var(--f-display);font-size:28px;margin:0 0 14px}
+.places{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:40px}
+.place{background:var(--sheet);border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0}
+.place img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.place .tx{padding:10px 12px 12px}
+.place b{display:block}
+.place .w{font-family:var(--f-mono);font-size:11px;color:var(--pink)}
+.place p{margin:4px 0 0;font-size:14px;color:var(--muted)}
+.place.noimg .tx{border-top:4px solid var(--chip)}
+
+/* gaps */
+.gaps{display:grid;gap:10px;max-width:760px}
+.gap{display:grid;grid-template-columns:170px minmax(0,1fr);gap:12px;background:var(--sheet);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:10px;padding:12px 14px}
+.gap b{font-weight:600}
+.gap span{color:var(--muted);font-size:14px}
+@media (max-width:560px){.gap{grid-template-columns:1fr}}
+.extras{margin-top:26px}.extras #extras{display:flex;flex-wrap:wrap;gap:6px}.xp{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px}.xp i{font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+footer{color:var(--muted);font-size:13px;padding-block:20px 40px;border-top:1px solid var(--line)}
+@media (prefers-reduced-motion:no-preference){.card,.stamp{transition:border-color .15s,transform .15s}.card:hover{transform:translateY(-2px)}}
+
+.langbtn{margin-left:auto;flex:none;align-self:center;border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:4px 4px;display:flex;gap:2px}
+.langbtn button{border:0;background:transparent;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer}
+.langbtn button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+</style>
+
+</head><body>
+<header class="wrap">
+  <div class="kicker">작은오류 · PALWORLD ANIMATION</div>
+  <h1 data-t="title"></h1>
+  <p class="lede" data-t="lede"></p>
+  <div class="stats" id="stats"></div>
+</header>
+<nav><div class="wrap tabs">
+  <a href="#story" data-v="story" data-t="tabStory"></a>
+  <a href="#cast" data-v="cast" data-t="tabCast"></a>
+  <a href="#world" data-v="world" data-t="tabWorld"></a>
+  <div class="langbtn" role="group" aria-label="Language"><button data-lang="ko">한국어</button><button data-lang="en">EN</button></div>
+</div></nav>
+
+<main class="wrap">
+  <section class="view" id="v-story">
+    <h2 data-t="tabStory"></h2>
+    <p class="sub" data-t="storySub"></p>
+    <div class="spine" id="spine"></div>
+    <div id="eplist"></div>
+  </section>
+
+  <section class="view" id="v-cast" hidden>
+    <h2 data-t="tabCast"></h2>
+    <p class="sub" data-t="castSub"></p>
+    <div class="filters">
+      <div id="gchips" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      <select id="epsel"></select>
+      <input id="q" type="search">
+    </div>
+    <div class="count" id="count"></div>
+    <div class="grid" id="grid"></div>
+    <div class="extras"><div class="lbl" data-t="extras"></div><div id="extras"></div></div>
+  </section>
+
+  <section class="view" id="v-world" hidden>
+    <h2 data-t="tabWorld"></h2>
+    <p class="sub" data-t="worldSub"></p>
+    <div class="spheres" id="spheres"></div>
+    <h3 class="sec" data-t="places"></h3>
+    <div class="places" id="places"></div>
+    <h3 class="sec" data-t="props"></h3>
+    <div class="places" id="props"></div>
+  </section>
+</main>
+
+<footer class="wrap" id="foot"></footer>
+
+<dialog id="dlg" aria-labelledby="dlg-name"><div style="position:relative">
+  <button class="close" id="dlg-close" aria-label="Close">×</button>
+  <div class="dlg">
+    <div style="display:flex;flex-direction:column;min-width:0"><div class="big"><img id="dlg-img" alt=""></div><div class="alts" id="dlg-alts"></div><div class="altcap" id="dlg-cap"></div></div>
+    <div class="info" id="dlg-info"></div>
+  </div>
+</div></dialog>
+
+<script>
+// 팰월드 XX일기 아카이브 데이터 (한/영) — 2026-11-03
+window.ARCHIVE = {
+updated: "2026-11-03",
+episodes: [
+ {n:1, ko:"신혼일기", en:"Honeymoon", live:true, yt:"https://youtu.be/VQn01CZmNHE",
+  sum:"만복이 팰파고스에 도착해 첫 팰들을 잡기 시작한다. 아누비스 곁에 있던 세크메트도 이때 만복에게 온다. 자리를 좀 잡자마자 조이에게 붙잡힌다.",
+  sumEn:"Manbok lands in Palpagos and starts catching his first Pals. Sekhmet leaves Anubis's side and joins him. Just as he's settling in, Zoe captures him.",
+  cast:["manbok","sekhmet","anubis","joy"]},
+ {n:2, ko:"탈출일기", en:"Escape", live:true, yt:"https://youtu.be/2rnTBn3tLp8",
+  sum:"조이의 캠프에서 강제 노동을 하지만 팰 능력이 없는 인간이라 쫓겨난다. 떠돌다 사막 해안에 떠밀려 핑크뇽에게 붙잡힌다. 기다리다 지친 까부냥과 세크메트가 만복을 찾아 나서 구해내고, 핑크뇽도 일행에 합류한다.",
+  sumEn:"Forced to work at Zoe's camp, Manbok gets thrown out for being a human with no Pal skills. He drifts until he washes up on a desert shore, where a Lovander captures him. Tired of waiting, Cattiva and Sekhmet go looking for him and rescue him, and the Lovander joins the group.",
+  cast:["manbok","joy","pinky","kkabu","sekhmet"]},
+ {n:3, ko:"해방일기", en:"Liberation", live:true, yt:"https://youtu.be/8iN_1H_-U3E",
+  sum:"만복이 인간 사냥에 나서 거점을 인간 노동으로 돌아가게 바꾸고, 팰들을 일에서 해방시킨다. 새 팰들도 얻고, 끝에서 조이의 기지를 칠 복수를 준비한다.",
+  sumEn:"Manbok goes on a human-catching spree and turns his base into one that runs on human labor, so his Pals can be free. He gains new Pals and prepares a revenge raid on Zoe's base.",
+  cast:["manbok","joy"]},
+ {n:4, ko:"복수일기", en:"Revenge", live:true, yt:"https://youtu.be/1bVx01tUt3U",
+  sum:"복수하러 간 조이의 기지는 이미 빅터 일당의 습격을 받고 있다. 만복은 복수를 접고 조이를 지키다 붙잡혀 빅터의 실험시설로 끌려간다. 감방에서 캐티메이지를 만나 기운을 북돋아준다. 끝에서 만복의 팰들과 조이가 손잡고 구출에 나선다.",
+  sumEn:"Manbok arrives for revenge, but Zoe's base is already under attack by Victor's group. He drops his grudge and fights to defend Zoe, only to be captured and taken to Victor's lab. In his cell he meets Katress and cheers her up. Manbok's Pals and Zoe team up to rescue him.",
+  cast:["manbok","joy","vic","mage"]},
+ {n:5, ko:"구출일기", en:"Rescue", live:true, yt:"https://youtu.be/yLgkznXUEyQ",
+  sum:"빅터가 루나리스와 만복에게 실험을 하려 한다. 캐티메이지가 감방을 탈출해 만복을 구하러 가고, 조이와 팰들의 기지 공격이 시선을 끈다. 빅터의 팰 제노그리프가 막아서지만, 라피에르가 캐티메이지를 구하고, 조이가 틈을 만들고, 리팡이 공격력을 올려준 만복의 일격으로 승리한다. 빅터는 붙잡혀 만복의 거점으로 끌려온다.",
+  sumEn:"Victor prepares an experiment on Lunaris and Manbok. Katress breaks out of her cell to save him, while Zoe and the Pals storm the base as a distraction. Victor's Shadowbeak steps in, but Dupin saves Katress, Zoe opens a gap, Leafan boosts Manbok's power, and his final blow wins the fight. Victor is captured and hauled back to Manbok's base.",
+  cast:["manbok","vic","mage","joy","rapi","pang","luna"]},
+ {n:6, ko:"온천일기", en:"Hot Spring", live:true, yt:"https://youtu.be/IHWmoaJB2YY",
+  sum:"빅터를 잡은 뒤 다 같이 온천으로 쉬러 간다. 밤에 친구의 기척을 느낀 캐티메이지가 몰래 나가고, 얀데리나가 눈치챈다. 세계수에 오염되어 광폭화한 마호가 캐티메이지를 공격하고, 막아선 얀데리나의 무기를 쳐낸다. 캐티메이지가 마호를 끌어안자 잠시 제정신이 든 마호는 캐티메이지를 해치지 않으려고 절벽에서 몸을 던진다. 온천에서 친해진 스틱툴라가 거미줄로 받아낸다. 그리고 세계수가 울린다.",
+  sumEn:"After capturing Victor, everyone heads to a hot spring to rest. That night Katress senses an old friend and slips out, and Splatterina notices. The friend is Wixen, corrupted by the World Tree and rampaging. Wixen disarms Splatterina, so Katress hugs him. He comes to his senses for a moment and throws himself off the cliff so he can never hurt her. The Tarantriss Manbok befriended at the spring catches him in a web. Then the World Tree rumbles.",
+  cast:["manbok","mage","mahu","yande","taran","vic"]},
+ {n:7, ko:"원정일기", en:"The Expedition", live:true, yt:"https://youtu.be/I2fFhOS65Yw",
+  sum:"마호가 끝내 오염으로 세상을 떠나고, 캐티메이지는 마호의 털을 담은 펜던트를 목에 건다. 만복은 세계수를 열 키스피어를 모으러 떠난다. 조이는 순순히, 릴리는 리팡을 껴안은 뒤, 액셀은 사우나 대결에서 진 뒤 키스피어를 건넨다. 사막으로 간 만복과 핑크뇽·세크메트는 밀매상에게 습격당한 핑크뇽의 옛 거점을 구한다. 한편 세계수의 포털로 나온 모노크로나는 사막에 떨어진다.",
+  sumEn:"Wixen passes away from the corruption, and Katress starts wearing a pendant with a tuft of his fur. Manbok sets out to gather the orbs that open the World Tree. Zoe hands hers over willingly, Lily gives hers after getting to hug Leafan, and Axel gives his after losing a sauna showdown. In the desert, Manbok, Lovander and Sekhmet save Lovander's old home from black marketeers. Meanwhile a Solenne walks out of a portal in the World Tree and ends up in the desert.",
+  cast:["manbok","mage","mahu","cosh","taran","mulbo","kkabu","joy","sylfia","everheart","pang","lyn","maji","bebi","luna","axe","jex","rob","vic","mono","alok","drilly","goldo","yande","sekhmet","pinky","doma","helgo","amsang","paca","pierce","dubi","thundi"]},
+ {n:8, ko:"소탕일기", en:"The Raid", live:true, yt:"https://youtu.be/c_Hsz4VnboQ",
+  sum:"두더비의 고향 사막마을. 마커스가 퍼뜨린 해피필로 무너진 마을과, 마커스와 한패인 부패 자경단을 소탕하고 감옥에 갇힌 팰들을 구한다. 서장에게서 경매장 VIP 블랙카드를 얻는다.",
+  sumEn:"Fuddler's hometown in the desert has been wrecked by Marcus's Happy Pills and a corrupt vigilante squad working with him. Manbok and Sekhmet take them down, free the jailed Pals, and get a VIP black card to the auction house from the chief.",
+  cast:["manbok","sekhmet","pinky","dubi","thundi","sando","residents","maku","guards","vil","miho","dochi","chief","zzino","goldo","yobi","anubis","rich","cherry"]},
+ {n:9, ko:"", en:"", live:false, yt:"",
+  sum:"서장에게서 얻은 VIP 블랙카드로 마커스의 팰 경매장에 잠입한다. 정장을 차려입은 만복과 함께 팰들이 저마다의 변장으로 흩어진다.",
+  sumEn:"With the VIP black card in hand, Manbok sneaks into Marcus's Pal auction in a suit, while his Pals scatter in disguises of their own.",
+  cast:["manbok","mage","mulbo","kkabu","rapi","fatbird","taran","rich","maku","cherry"]}
+],
+groups:{crew:["만복과 팰들","Manbok & Pals"], ally:["인물·탑 주인","Allies & Tower Bosses"], rescued:["구출한 팰","Rescued Pals"], foe:["적","Enemies"], other:["그 외 팰","Wild Pals"]},
+cast:[
+ {id:"manbok",n:"만복",en:"Manbok",g:"crew",h:180,eps:[1,2,3,4,5,6,7,8,9],img:"manbok",
+  alts:[["manbok-v1","~7편 복장","Outfit up to Ep. 7"],["manbok-v2","하얀 실크 옷 (7편~)","White silk outfit (Ep. 7~)"],["manbok-spy","정장 (9편)","Suit (Ep. 9)"],["manbok-battle","전투 (9편)","Battle (Ep. 9)"]],
+  role:"주인공이자 팰 조련사. 팰 능력 없는 인간이지만 늘 팰 편에 선다. 7편부터 성숙하고 늠름해졌고 얼굴에 옅은 흉터가 생겼다.",
+  roleEn:"The MC (fans call him \"nakedman\"). A human with no Pal powers who always sides with Pals. From Ep. 7 he looks older and tougher, with a faint scar on his face.",
+  must:["얼굴에 옅은 흉터 (7편~)","날렵하고 탄탄한 체형"],mustEn:["Faint scar on his face (Ep. 7~)","Lean, fit build"]},
+ {id:"sekhmet",n:"세크메트",en:"Sekhmet",g:"crew",h:170,eps:[1,2,7,8,9],img:"sekhmet",
+  alts:[["sekhmet-old","이전 디자인","Earlier design"],["sekhmet-det","형사 복장 (8편)","Detective outfit (Ep. 8)"]],
+  role:"만복의 파트너 고양이 팰. 1편에서 아누비스 곁을 떠나 만복에게 왔고, 2편에서 까부냥과 함께 만복을 구한다. 8편 액션의 주인공.",
+  roleEn:"Manbok's partner cat Pal. She left Anubis for Manbok in Ep. 1 and rescued him with Cattiva in Ep. 2. The action star of Ep. 8.",
+  must:["금 머리장식은 이마에만, 뒤에서 보면 파란 단발과 검은 귀"],mustEn:["Gold headpiece on the forehead only; from behind, just a blue bob and black ears"]},
+ {id:"pinky",n:"핑크뇽",en:"Lovander",g:"crew",h:190,eps:[2,7,8],img:"pinky",alts:[["pinky-old","이전 디자인","Earlier design"]],
+  role:"2편에서 사막 해안에 떠밀려온 만복을 붙잡았다가 일행에 합류했다. 만복에게 착 달라붙고, 화나면 숨겨둔 생크림 케이크부터 던진다.",
+  roleEn:"Captured Manbok when he washed up on the desert shore in Ep. 2, then joined the group. Clings to Manbok, and when angry, throws a hidden cream cake first."},
+ {id:"mage",n:"캐티메이지",en:"Katress",g:"crew",h:160,eps:[4,5,6,7,9],img:"mage",
+  alts:[["mage-old","마호 펜던트","Wixen pendant"],["mage-spy","연미복 (9편)","Tailcoat (Ep. 9)"]],
+  role:"4편 빅터의 감방에서 만복을 만나고, 5편에선 만복을 구하러 간다. 마호의 오랜 친구로, 7편부터 마호의 펜던트를 목에 건다.",
+  roleEn:"Met Manbok in Victor's cell in Ep. 4 and broke out to save him in Ep. 5. Wixen's old friend; from Ep. 7 she wears his pendant.",
+  must:["입이 없어요: 스카프에 가려 눈·귀·손으로만 감정을 표현","얼굴이 만복 어깨 높이, 모자 끝은 만복 머리 위"],mustEn:["No mouth: a scarf covers her face, so she emotes with eyes, ears and hands","Her face reaches Manbok's shoulder; her hat tip rises above his head"]},
+ {id:"mahu",n:"마호",en:"Wixen",g:"crew",h:160,eps:[5,6,7],img:null,
+  role:"캐티메이지의 친구. 세계수에 오염되어 6편에서 광폭화하고, 캐티메이지를 지키려 절벽에서 몸을 던진다. 스틱툴라가 받아냈지만 7편에서 끝내 세상을 떠난다.",
+  roleEn:"Katress's friend. Corrupted by the World Tree, he rampages in Ep. 6 and leaps off a cliff to protect her. Tarantriss catches him, but he passes away in Ep. 7."},
+ {id:"mulbo",n:"멀보냥",en:"Nyafia",g:"crew",h:180,eps:[7,9],img:"mulbo",alts:[["mulbo-spy","웨이터 연미복 (9편)","Waiter tailcoat (Ep. 9)"]],
+  role:"롱다리 고양이형 팰. 까부냥을 좋아하고 산탄총 달인이다.",
+  roleEn:"A long-legged cat Pal. Adores Cattiva and is a shotgun expert.",
+  must:["손가락 4개에 길고 흰 손톱"],mustEn:["Four fingers with long white claws"]},
+ {id:"kkabu",n:"까부냥",en:"Cattiva",g:"crew",h:130,eps:[2,7,9],img:"kkabu",
+  alts:[["kkabu-old","이전 디자인","Earlier design"],["kkabu-spy","선글라스 (9편)","Sunglasses (Ep. 9)"]],
+  role:"분홍 고양이 팰. 2편에서 세크메트와 함께 만복을 찾아 나섰다. 손이 빠르다.",
+  roleEn:"A pink cat Pal. Went looking for Manbok with Sekhmet in Ep. 2. Has very quick paws."},
+ {id:"taran",n:"스틱툴라",en:"Tarantriss",g:"crew",h:150,eps:[6,7,9],img:"taran",
+  role:"6편 온천에서 친해져 거미줄로 마호를 받아냈다. 뜨개질 장인이라 만복의 하얀 실크 옷과 정장을 만들었다. 땀은 다리로 닦는다.",
+  roleEn:"Befriended at the hot spring in Ep. 6, it caught Wixen with its web. A master knitter who made Manbok's white silk outfit and his suit. Wipes sweat with its legs.",
+  must:["팔 2개, 다리 4개"],mustEn:["Two arms, four legs"]},
+ {id:"rapi",n:"라피에르",en:"Dupin",g:"crew",h:170,eps:[5,9],img:"rapi",
+  alts:[["rapi-old","이전 디자인","Earlier design"],["rapi-spy","잠입 모드 (9편)","Infiltration mode (Ep. 9)"]],
+  role:"광대 토끼 팰. 5편에서 제노그리프에게 당할 뻔한 캐티메이지를 구한다. 자유롭게 따로 노는 와일드카드.",
+  roleEn:"A jester rabbit Pal. Saves Katress from Shadowbeak in Ep. 5. A free-roaming wild card.",
+  must:["성별이 정해지지 않은 캐릭터"],mustEn:["No set gender"]},
+ {id:"fatbird",n:"뇌운조",en:"Dynamoff",g:"crew",h:250,eps:[9],img:"fatbird",alts:[["fatbird-party","파티 버전","Party version"]],
+  role:"통통한 거구의 번개 새 팰. 라피에르와 같이 다닌다.",roleEn:"A huge, chubby thunderbird Pal that travels with Dupin."},
+ {id:"maji",n:"마조리나",en:"Majex",g:"crew",h:160,eps:[7],img:"maji",
+  role:"여우형 불꽃 팰. 시크하고 뚱한 표정이 기본. 화산의 더위를 즐기고 사우나 대결에서 혼자 \"으헤헤헤~\" 우승한다.",
+  roleEn:"A fiery fox Pal with a permanent sulky look. Loves the volcano heat and wins the sauna showdown with a happy \"uhehehe~\"."},
+ {id:"yande",n:"얀데리나",en:"Splatterina",g:"crew",h:160,eps:[6,7],img:"yande",
+  role:"긴 진홍 머리에 깃털 칼을 든 팰. 6편에서 몰래 나간 캐티메이지를 따라가 마호를 막아선다.",
+  roleEn:"A Pal with long crimson hair and a feather blade. In Ep. 6 she follows Katress and stands up to Wixen.",
+  must:["깃털 모양 칼"],mustEn:["Feather-shaped blade"]},
+ {id:"luna",n:"루나리스",en:"Lunaris",g:"crew",h:160,eps:[5,7],img:"luna",
+  role:"매끈한 흰색 팰. 5편에서 빅터의 실험 대상이 된다. 화산에서도 땀 한 방울 흘리지 않는다.",
+  roleEn:"A sleek white Pal. Victor's test subject in Ep. 5. Doesn't break a sweat even on the volcano."},
+ {id:"bebi",n:"베비뇽",en:"Chillet",g:"crew",h:250,eps:[7],img:"bebi",
+  role:"순한 거구의 롱넥 팰. 화산 하산길엔 등에 루나리스를 태운다.",roleEn:"A gentle, giant long-necked Pal. Carries Lunaris on its back down the volcano."},
+ {id:"cosh",n:"코쉬마리",en:"Nitemary",g:"crew",h:null,eps:[7],img:"cosh",
+  role:"파란 영혼 불꽃을 든 치유 팰. 마호를 살리지 못하고 오열한다.",roleEn:"A healer holding a blue spirit flame. Breaks down after failing to save Wixen."},
+ {id:"pang",n:"리팡",en:"Leafan",g:"crew",h:160,eps:[5,7],img:"pang",
+  role:"판다형 무술 팰. 5편에서 만복의 공격력을 올려 빅터를 쓰러뜨리게 돕는다. 7편에선 릴리에게 붙잡혀 야윈다.",
+  roleEn:"A martial-arts panda Pal. Boosts Manbok's attack to beat Victor in Ep. 5. In Ep. 7, Lily won't let go of it."},
+ {id:"ddungko",n:"뚱코알라",en:"Depresso",g:"crew",h:100,eps:[],img:"ddungko",role:"늘 무표정으로 곡괭이질을 한다. 울 때도 무표정으로 눈물만 흘린다.",roleEn:"Mines with a permanently blank face. Even its tears come with a blank face."},
+ {id:"beauty",n:"뷰티플라워",en:"Lullu",g:"crew",h:null,eps:[],img:"beauty",role:"꽃잎 드레스의 꽃 요정 팰.",roleEn:"A flower-fairy Pal in a petal gown."},
+ {id:"swordfish",n:"날검치",en:"Skutlass",g:"crew",h:150,eps:[],img:"swordfish",role:"칼로 변신하는 황새치 팰. 머리가 손잡이, 몸이 칼날이 된다.",roleEn:"A swordfish Pal that turns into a sword: its head becomes the hilt, its body the blade."},
+
+ {id:"joy",n:"조이",en:"Zoe",g:"ally",h:160,eps:[1,2,3,4,5,7],img:"joy",
+  role:"1편에서 만복을 붙잡아 부려먹다 쫓아냈지만, 4편 빅터의 습격 때 만복이 지켜준 뒤 5편 구출에 함께한다. 7편에서 순순히 핑크 키스피어를 건넨다.",
+  roleEn:"Captured and worked Manbok in Ep. 1, then threw him out. After he defends her from Victor in Ep. 4, she joins his rescue in Ep. 5 and hands over the pink orb in Ep. 7."},
+ {id:"thunda",n:"일렉판다",en:"Grizzbolt",g:"ally",h:null,eps:[],img:"thunda",role:"조이의 전용 팰.",roleEn:"Zoe's signature Pal."},
+ {id:"everheart",n:"릴리",en:"Lily",g:"ally",h:170,eps:[7],img:"everheart",role:"탑의 주인. 리팡을 보면 하트눈이 되어 껴안고 놓지 않는다. 초록 키스피어를 건넨다.",roleEn:"A tower boss. Goes heart-eyed for Leafan and won't let go. Gives up the green orb."},
+ {id:"lyn",n:"릴린",en:"Lyleen",g:"ally",h:200,eps:[7],img:"lyn",role:"릴리의 전용 팰. 말없이 우아하게 커피를 내온다.",roleEn:"Lily's signature Pal. Serves coffee in elegant silence."},
+ {id:"sylfia",n:"실피아",en:"Elphidran",g:"ally",h:250,eps:[7],img:"sylfia",role:"릴리의 탑 문지기. 문을 가득 채우는 하늘색 용.",roleEn:"Gatekeeper of Lily's tower. A sky-blue dragon that fills the doorway."},
+ {id:"axe",n:"액셀",en:"Axel",g:"ally",h:185,eps:[7],img:"axe",role:"화산 탑의 주인. 사우나 대결에서 만복과 동시에 쓰러지고, 분해하며 보라 키스피어를 건넨다.",roleEn:"Boss of the volcano tower. Collapses at the same moment as Manbok in the sauna showdown and grudgingly hands over the purple orb."},
+ {id:"jex",n:"볼젝스",en:"Orserk",g:"ally",h:200,eps:[7],img:"jex",role:"액셀의 번개 용. 액셀과 동시에 \"우하하하\". 사우나에서 제일 먼저 방전된다.",roleEn:"Axel's thunder dragon. Laughs \"wahaha\" in sync with Axel and is the first to short out in the sauna."},
+ {id:"rob",n:"라비",en:"Flambelle",g:"ally",h:100,eps:[7],img:"rob",role:"사우나 대결의 심판.",roleEn:"Referee of the sauna showdown."},
+ {id:"anubis",n:"아누비스",en:"Anubis",g:"ally",h:190,eps:[1,8],img:"anubis",role:"세크메트의 전 남친. 1편에서 세크메트를 만복에게 뺏겼다. 8편에서 서장의 비장의 무기로 나왔다가 세크메트를 보자마자 항복한다.",roleEn:"Sekhmet's ex. Lost her to Manbok in Ep. 1. In Ep. 8 he's the chief's secret weapon, until he sees Sekhmet and instantly surrenders.",
+  must:["폭주하면 붉은 눈, 평소엔 파란 눈"],mustEn:["Red eyes when rampaging, blue otherwise"]},
+ {id:"doma",n:"도마맨",en:"Leezpunk",g:"ally",h:160,eps:[7],img:"doma",role:"핑크뇽의 옛 거점 팰. 거점을 지키다 쓰러지고도 웃으며 출구를 가리킨다.",roleEn:"A Pal from Lovander's old home. Even after falling in its defense, it grins and points the way out."},
+ {id:"helgo",n:"헬고트",en:"Incineram",g:"ally",h:190,eps:[7],img:"helgo",role:"핑크뇽의 옛 거점 팰. 도마맨과 함께 맞서다 쓰러진다.",roleEn:"A Pal from Lovander's old home. Falls fighting beside Leezpunk."},
+ {id:"sando",n:"샌드몽",en:"Robinquill Terra",g:"ally",h:180,eps:[8],img:"sando",role:"사막마을의 듬직한 지킴이 팰.",roleEn:"The desert town's steadfast guardian Pal."},
+ {id:"residents",n:"사막마을 주민",en:"Desert Townsfolk",g:"ally",h:null,eps:[8],img:"residents",role:"해피필과 자경단에 시달린 사막마을 사람들.",roleEn:"The people of the desert town, worn down by Happy Pills and the vigilantes."},
+
+ {id:"dubi",n:"두더비",en:"Fuddler",g:"rescued",h:130,eps:[7,8],img:"dubi",role:"사막마을 팰. 핑크뇽의 옛 거점에 있다가 끌려갔다. 땅파기 달인.",roleEn:"A Pal from the desert town, taken from Lovander's old home. A digging expert."},
+ {id:"thundi",n:"썬더키드",en:"Dazzi",g:"rescued",h:140,eps:[7,8],img:"thundi",role:"구름에 앉은 사막마을 팰. 비구름으로 밭에 물을 준다.",roleEn:"A desert-town Pal riding a cloud. Waters the fields with rain."},
+ {id:"miho",n:"미호",en:"Vixy",g:"rescued",h:100,eps:[8],img:"miho",role:"좌판 밑에 숨어 있다 끌려간 여우 팰. 구출된 뒤 두더비와 춤춘다.",roleEn:"A fox Pal dragged from under a market stall. Dances with Fuddler after being freed."},
+ {id:"dochi",n:"찌릿도치",en:"Jolthog",g:"rescued",h:100,eps:[8],img:"dochi",role:"항아리 속에 숨어 있다 끌려간 고슴도치 팰.",roleEn:"A hedgehog Pal dragged out of a clay jar."},
+ {id:"zzino",n:"찌르르디노",en:"Dinossom Lux",g:"rescued",h:250,eps:[8],img:"zzino",role:"비좁은 감방에 갇혀 있다가 마을 사람과 펑펑 울며 재회한다.",roleEn:"Locked in a cramped cell, then reunited with a townswoman in floods of tears."},
+ {id:"goldo",n:"골도롱",en:"Dumud Gild",g:"rescued",h:150,eps:[7,8],img:"goldo",role:"7편엔 사막 야생, 8편엔 지하 감옥에. 재회 장면에서도 무표정.",roleEn:"Wild in the desert in Ep. 7, jailed underground in Ep. 8. Stays blank-faced even at the reunion."},
+ {id:"yobi",n:"귀요비",en:"Cinnamoth",g:"rescued",h:100,eps:[8],img:"yobi",role:"지하 감옥 2층 감방에 갇혀 있던 작은 나방 팰.",roleEn:"A little moth Pal locked in the upper cells of the underground jail."},
+ {id:"cherry",n:"체를리나",en:"Petallia Ignis",g:"rescued",h:160,eps:[8,9],img:"cherry",role:"경매장에서 가면 쓴 부자에게 팔려간다. 체념한 얼굴에 슬픔이 배어 있다.",roleEn:"Sold to a masked rich man at the auction. Her resigned face hides a quiet sadness."},
+ {id:"mono",n:"모노크로나",en:"Solenne",g:"rescued",h:170,eps:[7,9],img:null,role:"세계수 속 동굴에 살던 흑백 고양이 팰. 포털로 사막에 떨어진 뒤 밀매상에게 잡혀 마커스의 손에 넘어간다.",roleEn:"A black-and-white cat Pal who lived in a cave inside the World Tree. After falling through a portal into the desert, she's caught by marketeers and ends up in Marcus's hands.",
+  must:["코가 없어요: 눈과 작은 입만"],mustEn:["No nose: only eyes and a small mouth"]},
+
+ {id:"vic",n:"빅터",en:"Victor",g:"foe",h:null,eps:[4,5,6,7],img:"vic",role:"4편에서 조이의 기지를 습격하고 만복을 실험시설에 가둔다. 5편에서 만복에게 져서 거점으로 끌려온다. 7편 목장에선 싹싹 빌며 화이트 키스피어를 건넨다.",roleEn:"Raids Zoe's base and locks Manbok in his lab in Ep. 4. Loses to Manbok in Ep. 5 and is hauled back to the base. In Ep. 7 he begs and hands over the white orb."},
+ {id:"maku",n:"마커스",en:"Marcus",g:"foe",h:190,eps:[8,9],img:"maku",role:"PIDF의 부패한 보스이자 팰 경매장 주인. 해피필을 퍼뜨리고, 빼앗은 팰을 가면 쓴 부자들에게 판다.",roleEn:"The corrupt PIDF boss who runs a Pal auction. Spreads Happy Pills and sells stolen Pals to masked rich buyers."},
+ {id:"horu",n:"호루스",en:"Faleris",g:"foe",h:200,eps:[9],img:"horu",role:"마커스의 맹금류 팰.",roleEn:"Marcus's bird-of-prey Pal."},
+ {id:"amsang",n:"암상",en:"Amsang",g:"foe",h:190,eps:[7],img:"amsang",role:"마커스 쪽 팰 운반책. 탐욕스러운 \"크하하하\". 킹파카 위에서 감옥 마차를 끈다.",roleEn:"Marcus's Pal smuggler with a greedy \"kuhahaha\". Drives the prison wagon from atop Kingpaca."},
+ {id:"paca",n:"킹파카",en:"Kingpaca",g:"foe",h:300,eps:[7],img:"paca",role:"암상의 감옥 마차를 끄는 팰. 표정은 늘 심통.",roleEn:"Pulls Amsang's prison wagon, always grumpy."},
+ {id:"pierce",n:"썬더피어스",en:"Prixter Lux",g:"foe",h:170,eps:[7],img:"pierce",role:"길을 막았다가 핑크뇽의 케이크와 로우킥에 쓰러진다.",roleEn:"Blocks the road, then falls to Lovander's cake and a low kick."},
+ {id:"vil",n:"빌",en:"Vil",g:"foe",h:null,eps:[8,9],img:"vil",role:"마커스의 부하들. 마을의 팰들을 끌고 간다.",roleEn:"Marcus's grunts. They drag the town's Pals away."},
+ {id:"chief",n:"부패 서장",en:"Corrupt Chief",g:"foe",h:180,eps:[8],img:"chief",role:"사막마을 경찰서장. 마커스와 한패. 아누비스가 항복하자 만복 앞에 무릎 꿇고 VIP 카드를 내놓는다.",roleEn:"The desert town's police chief, in league with Marcus. When Anubis surrenders, he kneels before Manbok and gives up the VIP card."},
+ {id:"guards",n:"부패 자경단",en:"Corrupt Vigilantes",g:"foe",h:175,eps:[8],img:"guards",alts:[["guards-fire","사격 자세","Firing stance"]],role:"서장 휘하의 자경단. 주민의 신고를 비웃는다. 마지막엔 울면서 해피필을 소각로에 나른다.",roleEn:"The chief's vigilantes, who laugh off the townsfolk's reports. In the end they tearfully haul Happy Pills to the incinerator."},
+ {id:"rich",n:"리치",en:"The Rich",g:"foe",h:null,eps:[8,9],img:"rich",alts:[["richcrowd","리치 군중","The crowd"]],role:"가면을 쓴 부자 경매 손님들.",roleEn:"Masked, wealthy auction guests."},
+ {id:"pidf",n:"PIDF 요원",en:"PIDF Agents",g:"foe",h:null,eps:[9],img:"pidf",role:"경매장 경비.",roleEn:"Auction house security."},
+
+ {id:"alok",n:"알록새",en:"Tocotoco",g:"other",h:140,eps:[7],img:"alok",role:"사막의 야생 팰. 골도롱을 쫓는다.",roleEn:"A wild desert Pal, chasing Dumud Gild."},
+ {id:"drilly",n:"드릴북이",en:"Digtoise",g:"other",h:300,eps:[7],img:"drilly",role:"사막의 야생 팰. 바위에 팽이처럼 박힌다.",roleEn:"A wild desert Pal that spins into rocks like a top."}
+],
+spheres:[
+ {c:"#E8508A",ko:"핑크",en:"Pink",from:["조이","Zoe"],ep:7},
+ {c:"#3AA66B",ko:"그린",en:"Green",from:["릴리","Lily"],ep:7},
+ {c:"#8E5BD6",ko:"퍼플",en:"Purple",from:["액셀","Axel"],ep:7},
+ {c:"#EDEDF3",ko:"화이트",en:"White",from:["빅터","Victor"],ep:7},
+ {c:"#1C1A24",ko:"블랙",en:"Black",from:null,ep:null}
+],
+places:[
+ {n:["세계수","The World Tree"],ep:[],img:null,d:["섬만 한 초거대 나무. 키스피어를 모아 열어야 하는 곳. 안쪽 동굴에 모노크로나가 살았다.","A tree the size of an island. The orbs are needed to open it. Solenne lived in a cave inside."]},
+ {n:["조이의 캠프","Zoe's Camp"],ep:[1,2,3,4],img:null,d:["만복이 붙잡혀 일하다 쫓겨난 곳. 4편에서 빅터 일당의 습격을 받는다.","Where Manbok was captured, worked and thrown out. Raided by Victor's group in Ep. 4."]},
+ {n:["빅터의 실험시설","Victor's Lab"],ep:[4,5],img:null,d:["만복과 캐티메이지가 갇혔던 곳.","Where Manbok and Katress were locked up."]},
+ {n:["온천","The Hot Spring"],ep:[6],img:null,d:["빅터를 잡은 뒤 쉬러 간 곳. 근처 절벽에서 마호가 몸을 던진다.","The rest stop after Victor's capture. Wixen leaps from a nearby cliff."]},
+ {n:["화산과 액셀의 탑","The Volcano & Axel's Tower"],ep:[7],img:null,d:["갈라진 검은 바위와 용암. 탑 안에는 나무 사우나장이 있다.","Cracked black rock and lava. A wooden sauna hall waits inside the tower."]},
+ {n:["사막마을","The Desert Town"],ep:[8],img:"p-desert",d:["분홍 테라코타 건물, 청록 타일, 파란 천막, 계단 광장과 시장 좌판.","Pink terracotta houses, teal tiles, blue awnings, a stepped plaza and market stalls."]},
+ {n:["자경단 건물","Vigilante Fort"],ep:[8],img:"p-vigilante",d:["돌로 쌓은 요새. 빨간 깃발과 철망 옥상.","A stone fortress with red banners and a fenced roof."]},
+ {n:["취조실","Interrogation Room"],ep:[8],img:"p-interrogation",d:["긴 나무 테이블과 매달린 램프. 어두운 구석에 무언가 숨어 있다.","A long wooden table under hanging lamps. Something lurks in the dark corner."]},
+ {n:["지하 감옥","Underground Jail"],ep:[8],img:"p-jail",d:["2층 감방이 둘러싼 거대한 지하 홀. 가운데 뒤쪽에 서장의 책상.","A vast underground hall ringed by two floors of cells, with the chief's desk at the back."]},
+ {n:["서장 사무실","Chief's Office"],ep:[8],img:"p-chiefoffice",d:["돌벽과 감방, 큰 나무 책상.","Stone walls, cells and a heavy wooden desk."]},
+ {n:["마커스의 경매장","Marcus's Auction House"],ep:[8,9],img:"p-auction",d:["둥근 무대와 빨간 커튼이 걸린 여러 층의 발코니.","A round stage beneath tiers of red-curtained balconies."]},
+ {n:["경매장 식당","Auction Dining Hall"],ep:[9],img:"p-dining",d:["손님들이 식사하는 연회장.","The banquet hall where guests dine."]}
+],
+props:[
+ {n:["마호의 펜던트","Wixen's Pendant"],ep:[7],img:null,d:["흰색에서 주황빛으로 물드는 여우 꼬리 장식. 캐티메이지가 목에 건다.","A fox-tail charm fading from white to orange. Katress wears it."]},
+ {n:["해피필","Happy Pill"],ep:[8],img:"happypill",d:["마커스가 파는 수상한 캡슐. 먹으면 행복해하다 쓰러지고 중독된다.","Marcus's shady capsules. They bring a rush of joy, then collapse and addiction."]},
+ {n:["감옥 마차","Prison Wagon"],ep:[7],img:"wagon",d:["쇠창살 우리와 사슬. 두더비와 썬더키드가 갇혔다.","Iron-barred cages and chains. Fuddler and Dazzi were locked inside."]},
+ {n:["VIP 블랙카드","VIP Black Card"],ep:[8,9],img:"vipcard",d:["금색 사선과 VIP 엠블럼. 경매장으로 들어가는 열쇠.","Gold stripes and a VIP emblem. The key into the auction."]}
+],
+extras:[
+ ["도로롱","Lamball"],["큐룰리스","Lifmunk"],["초토리","Verdash"],["불무사","Bushi"],["플루미","Jelliette"],["흘루미","Jellroy"],
+ ["센코","Flaracle"],["만티녹턴","Blazehowl Noct"],["루나티","Nox"],["제노그리프","Shadowbeak"]
+]
+};
+
+(function(){
+const A=window.ARCHIVE, $=s=>document.querySelector(s), esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const byId=Object.fromEntries(A.cast.map(c=>[c.id,c]));
+const imgSrc=k=>"img/"+k+".webp";
+const T={
+ ko:{title:'팰월드 XX일기<span class="heart">♡</span> 아카이브',lede:"만복이 팰파고스에 떨어진 날부터 경매장 잠입까지. 편별 줄거리, 캐릭터와 팰, 키스피어와 장소를 한곳에 모았어요.",
+  tabStory:"이야기",tabCast:"캐릭터 &amp; 팰",tabWorld:"키스피어 · 장소",storySub:"숫자는 편 순서예요. 얼굴을 누르면 캐릭터 소개가 열려요.",
+  castSub:"카드를 누르면 다른 복장과 디자인 포인트, 만복과의 키 비교가 나와요. 팰 이름은 게임 한국어판 이름이에요.",
+  worldSub:"세계수를 열려면 키스피어를 모아야 해요. 7편에서 네 개가 모였어요.",places:"장소",props:"소품",extras:"그 밖에 등장한 팰",
+  eps:"편",chars:"캐릭터·팰",orbs:"키스피어",all:"전체",allEps:"모든 편",noEp:"편 미기록",search:"이름 검색 (한글·영문)",count:n=>n+"명",empty:"조건에 맞는 캐릭터가 없어요.",
+  live:"공개",wip:"제작 중",watch:"영상 보기 ↗",ep:n=>n+"편",epRange:(a,b)=>a+"~"+b+"편",lore:"설정",none:"미기록",soon:"제작 중",
+  epTitle:e=>`팰월드 ${esc(e.ko)}<span class="heart">♡</span>`,epSub:e=>"My Palworld Diary: "+e.en,ep9:"9편 · 제목 미정",ep9sub:"다음 이야기",
+  main:"대표 이미지",noimg:"이미지 없음",design:"디자인 포인트",height:"키 비교",appears:"등장",notYet:"아직 등장 안 함",
+  foot:`작은오류(Oryu)의 팰월드 애니메이션 기록 · 1~6편 줄거리는 시청자 정리를 참고했어요 · ${A.updated} 갱신`},
+ en:{title:'My Palworld Diary<span class="heart">♡</span> Archive',lede:"From the day Manbok landed in Palpagos to the auction heist. Every episode, character, Pal, key orb and place in one spot.",
+  tabStory:"Story",tabCast:"Characters &amp; Pals",tabWorld:"Orbs &amp; Places",storySub:"Episodes in order. Tap a face to open that character.",
+  castSub:"Tap a card for alternate outfits, design notes and a height check against Manbok. Pal names follow the game's English edition.",
+  worldSub:"Opening the World Tree takes the key orbs. Four were collected in Episode 7.",places:"Places",props:"Items",extras:"Other Pals that appeared",
+  eps:"episodes",chars:"characters & Pals",orbs:"key orbs",all:"All",allEps:"All episodes",noEp:"Not yet placed",search:"Search names (EN / KR)",count:n=>n+" shown",empty:"No characters match.",
+  live:"Released",wip:"In production",watch:"Watch ↗",ep:n=>"Ep. "+n,epRange:(a,b)=>"Ep. "+a+"–"+b,lore:"Lore",none:"—",soon:"Soon",
+  epTitle:e=>`My Palworld Diary: ${esc(e.en)}<span class="heart">♡</span>`,epSub:e=>"팰월드 "+e.ko+"♡",ep9:"Episode 9 · Title TBA",ep9sub:"Up next",
+  main:"Main image",noimg:"No image yet",design:"Design notes",height:"Height check",appears:"Appears in",notYet:"Not revealed yet",
+  foot:`Made by 작은오류 (Oryu) · Episode 1–6 summaries draw on a viewer's recap · Updated ${A.updated}`}
+};
+let L="ko"; try{L=localStorage.getItem("lang")||""}catch(e){} if(L!=="ko"&&L!=="en")L=/^ko/i.test(navigator.language||"")?"ko":"en";
+const t=k=>T[L][k];
+const nm=c=>L==="ko"?c.n:c.en, sub=c=>L==="ko"?c.en:c.n;
+const epsLabel=a=>{if(!a.length)return t("lore");const s=[...a].sort((x,y)=>x-y);return s.length>2&&s[s.length-1]-s[0]===s.length-1?t("epRange")(s[0],s[s.length-1]):s.map(n=>t("ep")(n)).join(" · ")};
+let G="all",EP="all",Q="";
+
+function render(){
+  document.documentElement.lang=L;
+  document.title=L==="ko"?"팰월드 XX일기 아카이브":"My Palworld Diary Archive";
+  document.querySelectorAll("[data-t]").forEach(el=>el.innerHTML=t(el.dataset.t));
+  document.querySelectorAll(".langbtn button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===L));
+  $("#stats").innerHTML=`<span><b>9</b> ${t("eps")}</span><span><b>${A.cast.length}</b> ${t("chars")}</span><span><b>4</b>/5 ${t("orbs")}</span>`;
+  $("#foot").textContent=t("foot");
+  $("#q").placeholder=t("search");$("#q").setAttribute("aria-label",t("search"));
+
+  $("#spine").innerHTML=A.episodes.map(e=>`<a class="stamp${e.live?"":" wip"}" href="#ep${e.n}"><span class="no">${String(e.n).padStart(2,"0")}</span><span class="t">${esc(e.n===9?t("soon"):L==="ko"?e.ko.replace("일기",""):e.en.replace("The ",""))}</span></a>`).join("");
+  const face=id=>{const c=byId[id];if(!c)return"";return `<button class="face" data-id="${c.id}" title="${esc(nm(c))}" aria-label="${esc(nm(c))}">${c.img?`<img src="${imgSrc(c.img)}" alt="" loading="lazy">`:esc(nm(c)[0])}</button>`};
+  $("#eplist").innerHTML=A.episodes.map(e=>`<article class="ep" id="ep${e.n}"><div class="num">${String(e.n).padStart(2,"0")}</div><div style="min-width:0">
+   <h3>${e.n===9?esc(t("ep9")):t("epTitle")(e)}<small>${esc(e.n===9?t("ep9sub"):t("epSub")(e))}</small></h3>
+   <div class="meta"><span class="pill ${e.live?"live":"wip"}">${t(e.live?"live":"wip")}</span>${e.yt?`<a class="pill" href="${e.yt}" target="_blank" rel="noopener">${t("watch")}</a>`:""}</div>
+   <p>${esc(L==="ko"?e.sum:e.sumEn)}</p>
+   <div class="faces">${e.cast.map(face).join("")}</div>
+  </div></article>`).join("");
+
+  $("#gchips").innerHTML=[["all",[t("all"),t("all")]],...Object.entries(A.groups)].map(([k,v])=>`<button class="chip" data-g="${k}" aria-pressed="${k===G}">${esc(L==="ko"?v[0]:v[1])}</button>`).join("");
+  $("#epsel").innerHTML=`<option value="all">${t("allEps")}</option>`+A.episodes.map(e=>`<option value="${e.n}">${t("ep")(e.n)}${e.n<9?" · "+esc(L==="ko"?e.ko:e.en):""}</option>`).join("")+`<option value="none">${t("noEp")}</option>`;
+  $("#epsel").value=EP;$("#epsel").setAttribute("aria-label",t("allEps"));
+  renderCast();
+
+  $("#spheres").innerHTML=A.spheres.map(s=>`<div class="sph${s.from?"":" ghost"}"><div class="orb" style="--c:${s.c}"></div><b>${esc(L==="ko"?s.ko:s.en)}</b><span>${s.from?esc(s.from[L==="ko"?0:1])+" · "+t("ep")(s.ep):t("notYet")}</span></div>`).join("");
+  const li=L==="ko"?0:1;
+  const tile=p=>`<div class="place${p.img?"":" noimg"}">${p.img?`<img src="${imgSrc(p.img)}" alt="${esc(p.n[li])}" loading="lazy">`:""}<div class="tx"><span class="w">${esc(epsLabel(p.ep))}</span><b>${esc(p.n[li])}</b><p>${esc(p.d[li])}</p></div></div>`;
+  $("#places").innerHTML=A.places.map(tile).join("");
+  $("#props").innerHTML=A.props.map(tile).join("");
+  $("#extras").innerHTML=A.extras.map(x=>`<span class="xp">${esc(L==="ko"?x[0]:x[1])} <i>${esc(L==="ko"?x[1]:x[0])}</i></span>`).join("");
+}
+function renderCast(){
+  const list=A.cast.filter(c=>(G==="all"||c.g===G)&&(EP==="all"||(EP==="none"?!c.eps.length:c.eps.includes(+EP)))&&(!Q||[c.n,c.en].join(" ").toLowerCase().includes(Q)));
+  $("#count").textContent=t("count")(list.length);
+  $("#grid").innerHTML=list.length?list.map(c=>`<button class="card" data-id="${c.id}">
+    <div class="pic">${c.img?`<img src="${imgSrc(c.img)}" alt="${esc(nm(c))}" loading="lazy">`:`<span class="none">${t("noimg")}</span>`}${c.h?`<span class="h">${c.h}cm</span>`:""}</div>
+    <div class="body"><span class="nm">${esc(nm(c))}</span><span class="en">${esc(sub(c))}</span>
+    <div class="eps">${c.eps.length?c.eps.map(n=>`<span>${n}</span>`).join(""):`<span>${t("none")}</span>`}</div></div></button>`).join(""):`<p class="empty">${t("empty")}</p>`;
+}
+document.addEventListener("click",ev=>{
+  const lb=ev.target.closest(".langbtn button");if(lb){L=lb.dataset.lang;try{localStorage.setItem("lang",L)}catch(e){}render();return}
+  const f=ev.target.closest(".face,.card");if(f)openChar(f.dataset.id);
+  const ch=ev.target.closest("#gchips .chip");if(ch){G=ch.dataset.g;document.querySelectorAll("#gchips .chip").forEach(x=>x.setAttribute("aria-pressed",x===ch));renderCast()}
+});
+$("#epsel").addEventListener("change",e=>{EP=e.target.value;renderCast()});
+$("#q").addEventListener("input",e=>{Q=e.target.value.trim().toLowerCase();renderCast()});
+
+const dlg=$("#dlg");
+$("#dlg-close").onclick=()=>dlg.close();
+dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
+function openChar(id){
+  const c=byId[id];if(!c)return;
+  const li=L==="ko"?1:2;
+  const imgs=c.img?[[c.img,t("main"),t("main")],...(c.alts||[])]:[];
+  const show=i=>{const im=imgs[i];$("#dlg-img").src=imgSrc(im[0]);$("#dlg-img").alt=nm(c)+" · "+im[li];$("#dlg-cap").textContent=imgs.length>1?im[li]:"";document.querySelectorAll("#dlg-alts button").forEach((b,j)=>b.setAttribute("aria-pressed",i===j))};
+  $("#dlg-alts").innerHTML=imgs.length>1?imgs.map((im,i)=>`<button data-i="${i}" title="${esc(im[li])}" aria-label="${esc(im[li])}"><img src="${imgSrc(im[0])}" alt=""></button>`).join(""):"";
+  $("#dlg-alts").hidden=imgs.length<2;$("#dlg-cap").hidden=imgs.length<2;
+  $("#dlg-alts").onclick=e=>{const b=e.target.closest("button");if(b)show(+b.dataset.i)};
+  if(imgs.length)show(0);else{$("#dlg-img").removeAttribute("src");$("#dlg-img").alt=t("noimg")}
+  const H=180,max=Math.max(H,c.h||0),mb=byId.manbok;
+  const ruler=c.h&&c.id!=="manbok"?`<div><div class="lbl">${t("height")}</div><div class="ruler"><div class="bar" style="height:${H/max*100}%"><i>180</i></div><div class="bar me" style="height:${c.h/max*100}%"><i>${c.h}</i></div></div><div class="rlab"><span>${esc(nm(mb))}</span><span>${esc(nm(c))}</span></div></div>`:"";
+  const must=L==="ko"?c.must:c.mustEn;
+  $("#dlg-info").innerHTML=`<div><h4 id="dlg-name">${esc(nm(c))}</h4><div class="en">${esc(sub(c))}${c.h?" · "+c.h+"cm":""}</div></div>
+   <p>${esc(L==="ko"?c.role:c.roleEn)}</p>
+   ${must&&must.length?`<div class="must"><div class="lbl">${t("design")}</div><ul>${must.map(m=>`<li>${esc(m)}</li>`).join("")}</ul></div>`:""}
+   ${ruler}
+   <div><div class="lbl">${t("appears")}</div><div class="eps">${c.eps.length?c.eps.map(n=>`<span>${t("ep")(n)}</span>`).join(""):`<span>${t("none")}</span>`}</div></div>`;
+  dlg.showModal();
+}
+
+const views=["story","cast","world"];
+function route(){
+  let h=location.hash.slice(1)||"story",target=null;
+  if(/^ep\d$/.test(h)){target=h;h="story"}
+  if(!views.includes(h))h="story";
+  views.forEach(v=>{$("#v-"+v).hidden=v!==h});
+  document.querySelectorAll(".tabs a").forEach(a=>a.setAttribute("aria-current",a.dataset.v===h?"page":"false"));
+  if(target){const el=document.getElementById(target);el&&el.scrollIntoView()}else window.scrollTo(0,0);
+}
+render();
+addEventListener("hashchange",route);route();
+})();
+</script>
+
+</body></html>
